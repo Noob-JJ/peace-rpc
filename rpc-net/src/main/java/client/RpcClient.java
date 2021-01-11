@@ -24,7 +24,8 @@ public class RpcClient {
             InputStream inputStream = socket.getInputStream();
             outputStream.write(data);
             inputStream.read();
-            // TODO: 2021/1/11 接受数据的逻辑需要再思考下 
+            
+            // TODO: 2021/1/11 接受数据的逻辑需要再思考下
         } catch (IOException e) {
             e.printStackTrace();
         }
