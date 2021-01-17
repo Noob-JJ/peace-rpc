@@ -11,13 +11,9 @@ import java.net.Socket;
  */
 public class RpcClient {
 
-    private String host;
-
-    private Integer port;
-
     private static final int TIMEOUT_TIME = 9 * 1000;
 
-    public Object request(RpcRequest rpcRequest) {
+    public static Object request(RpcRequest rpcRequest, String host, int port) {
         try(Socket socket = new Socket(host, port)) {
             socket.setSoTimeout(TIMEOUT_TIME);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());

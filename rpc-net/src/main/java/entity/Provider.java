@@ -17,9 +17,35 @@ public class Provider {
     }
 
 
-    public String getNode(){
-        // TODO: 2021/1/16 如果存在多个节点进行负载均衡策略  那就要注意一点 这个方法的调用一定是伴随着每一次服务的调用不然负载均衡就没有起效
-        return "";
+    public Node getNode(){
+        // TODO: 2021/1/17 负载均衡的策略也是通过配置文件来的
+        return new Node("", "", "");
+    }
+    
+    public static class Node{
+        private String serviceName;
+        
+        private String host;
+        
+        private int port;
+
+        public Node(String serviceName, String host, String port) {
+            this.serviceName = serviceName;
+            this.host = host;
+            this.port = Integer.parseInt(port);
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public String getServiceName() {
+            return serviceName;
+        }
     }
 
 }

@@ -19,7 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by JackJ on 2021/1/16.
  */
-public class Zookeeper implements Registry {
+enum Zookeeper implements Registry {
+    INSTANCE;
 
     private static Map<String, List<String>> provider = new ConcurrentHashMap<>();
 
@@ -28,10 +29,6 @@ public class Zookeeper implements Registry {
     private static final int MAX_RETRY = 3;
 
     private static CuratorFramework zkClient;
-
-    Zookeeper(){
-
-    }
 
     static {
         // TODO: 2021/1/16 zk地址硬编码待 配置文件模块处理完毕后解决
@@ -113,7 +110,7 @@ public class Zookeeper implements Registry {
     }
 
     public static void main(String[] args) throws Exception {
-        Zookeeper zookeeper = new Zookeeper();
+        Zookeeper zookeeper = INSTANCE;
         zookeeper.registry("test", "com.example.test", "127.0.0.1", "5005");
         for(String value : zookeeper.getNode("com.example.test")){
             System.out.println(value);

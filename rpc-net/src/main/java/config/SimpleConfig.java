@@ -9,7 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by JackJ on 2021/1/17.
  */
-public class SimpleConfig implements Config {
+public enum SimpleConfig implements Config {
+    INSTANCE;
 
     private static final Map<String, String> config = new ConcurrentHashMap<>();
 
@@ -27,7 +28,7 @@ public class SimpleConfig implements Config {
 
     @Override
     public void init(Properties properties) {
-        if(!isInit) {
+        if (!isInit) {
             synchronized (this) {
                 if (!isInit) {
                     Map<String, String> exMap = (Map) properties;
@@ -40,4 +41,6 @@ public class SimpleConfig implements Config {
             }
         }
     }
+
+
 }
