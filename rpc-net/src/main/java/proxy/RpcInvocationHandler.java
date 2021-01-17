@@ -26,7 +26,7 @@ public class RpcInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Provider provider = RegistryFactory.getRegistry().getProvider(target.getName());
         Provider.Node node = provider.getNode();
-        RpcRequest request = new RpcRequest(provider.getClassName(), method.getName(), args);
+        RpcRequest request = new RpcRequest(provider.getImplClassName(), method.getName(), args);
         if (!request.checkParams()) {
             throw new Exception("参数中存在未序列化的参数");
         }

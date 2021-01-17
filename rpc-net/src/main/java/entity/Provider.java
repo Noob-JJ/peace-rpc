@@ -11,9 +11,12 @@ public class Provider {
 
     private String className;
 
+    private String implClassName;
+
     private List<String> hostAndPort;
 
-    public Provider(String className, List<String> hostAndPort) {
+    public Provider(String implClassName, String className, List<String> hostAndPort) {
+        this.implClassName = implClassName;
         this.className = className;
         this.hostAndPort = hostAndPort;
     }
@@ -26,10 +29,12 @@ public class Provider {
             String[] infos = hostAndPort.get(0).split(":");
             return new Node(infos[0], infos[1], infos[2]);
         } else if (SimpleConfig.INSTANCE.get("rpc.load.balance") == null) {
-            return null;
+            String[] infos = hostAndPort.get(0).split(":");
+            return new Node(infos[0], infos[1], infos[2]);
         }
         else{
-            return null;
+            String[] infos = hostAndPort.get(0).split(":");
+            return new Node(infos[0], infos[1], infos[2]);
         }
 
         // TODO: 2021/1/17 这里的负载均衡策略还需要进一步思考下
@@ -37,6 +42,10 @@ public class Provider {
 
     public String getClassName() {
         return className;
+    }
+
+    public String getImplClassName() {
+        return implClassName;
     }
 
     public static class Node{

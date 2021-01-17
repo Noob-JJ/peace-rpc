@@ -3,6 +3,8 @@ package start;
 import config.Config;
 import config.ConfigTem;
 import config.SimpleConfig;
+import net.server.RpcServer;
+import net.server.SimpleRequestHandler;
 import proxy.InvocationHandlerFactory;
 import regsitry.Registry;
 import regsitry.RegistryFactory;
@@ -36,6 +38,12 @@ public class Rpc {
         changeConfig();
         registry();
         sub();
+        RpcServer rpcServer = new RpcServer(Integer.parseInt(config.getProviderPort()), new SimpleRequestHandler());
+        Thread thread = new Thread(() -> {
+            rpcServer.start();
+            // TODO: 2021/1/17 怎么替换 
+        });
+        thread.start();
     }
 
     private void sub() throws Exception {
@@ -51,7 +59,9 @@ public class Rpc {
         String port = config.getProviderPort();
         String ip = config.getProviderIp();
         for (String className : classNames) {
-            registry.registry(name,className, ip, port);
+            if(!className.equals("")) {
+                registry.registry(name, className, ip, port);
+            }
         }
     }
 

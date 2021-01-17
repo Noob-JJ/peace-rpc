@@ -22,13 +22,16 @@ public class RpcRequest implements Serializable {
 
     public boolean checkParams(){
         // TODO: 2021/1/17 如果有基本类型的参数存在那肯定会有问题吧
+        if (params == null || params.length == 0) {
+            return true;
+        }
         for (Object object : params) {
             if (!(object instanceof Serializable)) {
-        return false;
-    }
-}
-return true;
+                return false;
+            }
         }
+        return true;
+    }
 
 public String getClassName() {
         return className;

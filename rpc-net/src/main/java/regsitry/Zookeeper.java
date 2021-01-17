@@ -25,7 +25,7 @@ enum Zookeeper implements Registry {
 
     // TODO: 2021/1/17 这里需要优化一下， 我觉得 应该用provider来当value 因为从抽象来看一个className因该用一个provider来表示
 
-    private static Map<String, List<String>> provider = new ConcurrentHashMap<>();
+    private static Map<String, Provider> provider = new ConcurrentHashMap<>();
 
     private static final int BASE_SLEEP_TIME = 1000;
 
@@ -41,15 +41,16 @@ enum Zookeeper implements Registry {
 
     @Override
     public void registry(String serviceName, String className, String host, String port) throws Exception {
-        String path = "/rpc/" + className + "/provider/node";
+        String[] strings = className.split(":");
+        String path = "/rpc/" + strings[0] + "/provider/node";
         createNode(CreateMode.EPHEMERAL_SEQUENTIAL, path, serviceName + ":" + host + ":" + port);
+        zkClient.setData().forPath("/rpc/" + strings[0], strings[1].getBytes());
     }
 
 
     @Override
     public Provider getProvider(String className) throws Exception {
-        List<String> hostAndPorts = getNode(className);
-        return new Provider(className, hostAndPorts);
+        return getNode(className);
     }
 
 
@@ -74,12 +75,14 @@ enum Zookeeper implements Registry {
                 case CHILD_UPDATED:
 
                 case CHILD_REMOVED:
-                    List<String> newNodes = curatorFramework.getChildren().forPath(classNamePath);
-                    List<String> datas = new ArrayList<>();
-                    for (String newNode : newNodes) {
-                        datas.add(new String(curatorFramework.getData().forPath(classNamePath + "/" + newNode)));
+                    String implClassName = new String(zkClient.getData().forPath("/rpc/" + className));
+                    List<String> ipAndPorts = new ArrayList<>();
+                    List<String> childNodes = zkClient.getChildren().forPath(classNamePath);
+                    for (String childNode : childNodes) {
+                        System.out.println(childNode);
+                        ipAndPorts.add(new String(zkClient.getData().forPath(classNamePath + "/" + childNode)));
                     }
-                    provider.put(className, datas);
+                    provider.put(className, new Provider(implClassName, className, ipAndPorts));
                     break;
                 case CONNECTION_LOST:
                     break;
@@ -97,16 +100,17 @@ enum Zookeeper implements Registry {
         pathChildrenCache.start();
     }
 
-    private List<String> getNode(String className) throws Exception {
+    private Provider getNode(String className) throws Exception {
         if (provider.get(className) == null) {
             String path = "/rpc/" + className + "/provider";
+            String implClassName = new String(zkClient.getData().forPath("/rpc/" + className));
             List<String> ipAndPorts = new ArrayList<>();
             List<String> childNodes = zkClient.getChildren().forPath(path);
             for (String childNode : childNodes) {
                 System.out.println(childNode);
                 ipAndPorts.add(new String(zkClient.getData().forPath(path + "/" + childNode)));
             }
-            return ipAndPorts;
+            return new Provider(implClassName, className, ipAndPorts);
         }
         return provider.get(className);
     }
