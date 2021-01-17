@@ -1,5 +1,6 @@
 package regsitry;
 
+import config.SimpleConfig;
 import entity.Provider;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -22,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 enum Zookeeper implements Registry {
     INSTANCE;
 
+    // TODO: 2021/1/17 这里需要优化一下， 我觉得 应该用provider来当value 因为从抽象来看一个className因该用一个provider来表示
+
     private static Map<String, List<String>> provider = new ConcurrentHashMap<>();
 
     private static final int BASE_SLEEP_TIME = 1000;
@@ -31,9 +34,8 @@ enum Zookeeper implements Registry {
     private static CuratorFramework zkClient;
 
     static {
-        // TODO: 2021/1/16 zk地址硬编码待 配置文件模块处理完毕后解决
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(BASE_SLEEP_TIME, MAX_RETRY);
-        zkClient = CuratorFrameworkFactory.builder().connectString("175.24.105.134:2181").retryPolicy(retryPolicy).build(); //how
+        zkClient = CuratorFrameworkFactory.builder().connectString(SimpleConfig.INSTANCE.get("rpc.registry.host")).retryPolicy(retryPolicy).build(); //how
         zkClient.start();
     }
 

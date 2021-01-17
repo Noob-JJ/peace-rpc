@@ -21,6 +21,7 @@ public class RpcRequest implements Serializable {
 
 
     public boolean checkParams(){
+        // TODO: 2021/1/17 如果有基本类型的参数存在那肯定会有问题吧
         for (Object object : params) {
             if (!(object instanceof Serializable)) {
                 return false;

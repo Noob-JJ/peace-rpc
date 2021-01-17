@@ -1,5 +1,7 @@
 package entity;
 
+import config.SimpleConfig;
+
 import java.util.List;
 
 /**
@@ -18,10 +20,25 @@ public class Provider {
 
 
     public Node getNode(){
-        // TODO: 2021/1/17 负载均衡的策略也是通过配置文件来的
-        return new Node("", "", "");
+        if (hostAndPort == null || hostAndPort.size() == 0) {
+            throw new RuntimeException("not find provider for" + this.getClassName());
+        } else if (hostAndPort.size() == 1) {
+            String[] infos = hostAndPort.get(0).split(":");
+            return new Node(infos[0], infos[1], infos[2]);
+        } else if (SimpleConfig.INSTANCE.get("rpc.load.balance") == null) {
+            return null;
+        }
+        else{
+            return null;
+        }
+
+        // TODO: 2021/1/17 这里的负载均衡策略还需要进一步思考下
     }
-    
+
+    public String getClassName() {
+        return className;
+    }
+
     public static class Node{
         private String serviceName;
         
@@ -29,7 +46,7 @@ public class Provider {
         
         private int port;
 
-        public Node(String serviceName, String host, String port) {
+        private Node(String serviceName, String host, String port) {
             this.serviceName = serviceName;
             this.host = host;
             this.port = Integer.parseInt(port);
