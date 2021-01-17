@@ -14,17 +14,17 @@ import java.lang.reflect.Method;
  */
 public class RpcInvocationHandler implements InvocationHandler {
 
-    private Object target;
+    private Class target;
 
 
-     RpcInvocationHandler(Object target) {
+     RpcInvocationHandler(Class target) {
         this.target = target;
     }
 
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Provider provider = RegistryFactory.getRegistry().getProvider(target.getClass().getName());
+        Provider provider = RegistryFactory.getRegistry().getProvider(target.getName());
         Provider.Node node = provider.getNode();
         RpcRequest request = new RpcRequest(provider.getClassName(), method.getName(), args);
         if (!request.checkParams()) {

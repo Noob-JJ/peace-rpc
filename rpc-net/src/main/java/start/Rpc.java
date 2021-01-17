@@ -3,6 +3,7 @@ package start;
 import config.Config;
 import config.ConfigTem;
 import config.SimpleConfig;
+import proxy.InvocationHandlerFactory;
 import regsitry.Registry;
 import regsitry.RegistryFactory;
 import util.FileUtils;
@@ -21,7 +22,7 @@ public class Rpc {
 
     public static ConfigTem config;
 
-    private static Rpc instace = new Rpc();
+    private static Rpc instace;
 
     private Rpc(){
 
@@ -50,7 +51,7 @@ public class Rpc {
         String port = config.getProviderPort();
         String ip = config.getProviderIp();
         for (String className : classNames) {
-            registry.registry(name, className, ip, port);
+            registry.registry(name,className, ip, port);
         }
     }
 
@@ -78,5 +79,14 @@ public class Rpc {
             }
         }
         return instace;
+    }
+
+    // TODO: 2021/1/17 这里也看看json转换那边怎么实现的
+    public <T> T getBean(Class<T> tClass) {
+        return (T) InvocationHandlerFactory.getRpcProxy(tClass);
+    }
+
+    public static ConfigTem getConfig() {
+        return config;
     }
 }

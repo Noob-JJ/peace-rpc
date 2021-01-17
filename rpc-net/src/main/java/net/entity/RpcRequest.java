@@ -24,23 +24,23 @@ public class RpcRequest implements Serializable {
         // TODO: 2021/1/17 如果有基本类型的参数存在那肯定会有问题吧
         for (Object object : params) {
             if (!(object instanceof Serializable)) {
-                return false;
-            }
+        return false;
+    }
+}
+return true;
         }
-        return true;
-    }
 
-    public String getClassName() {
+public String getClassName() {
         return className;
-    }
+        }
 
-    public void setClassName(String className) {
+public void setClassName(String className) {
         this.className = className;
-    }
+        }
 
-    public String getMethodName() {
+public String getMethodName() {
         return methodName;
-    }
+        }
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;

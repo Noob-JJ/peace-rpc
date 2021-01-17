@@ -25,7 +25,7 @@ public final class ConfigTem {
         this.registry = registry == null ? "zookeeper" : registry;
         this.registryHost = registryHost == null ? "" : registryHost;
         this.providerIp = providerIp == null ? "" : providerIp;
-        this.providerPort = providerPort == null ? "" : "2181";
+        this.providerPort = providerPort == null ? "" : "333";
         this.providerClass = providerClass == null ? "" : providerClass;
         this.subcribeClass = subcribeClass == null ? "" : subcribeClass;
     }

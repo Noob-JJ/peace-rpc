@@ -112,11 +112,6 @@ enum Zookeeper implements Registry {
     }
 
     public static void main(String[] args) throws Exception {
-        Zookeeper zookeeper = INSTANCE;
-        zookeeper.registry("test", "com.example.test", "127.0.0.1", "5005");
-        for(String value : zookeeper.getNode("com.example.test")){
-            System.out.println(value);
-        }
 
     }
 }

@@ -2,6 +2,7 @@ package regsitry;
 
 
 import config.SimpleConfig;
+import start.Rpc;
 import util.FileUtils;
 
 /**
@@ -10,8 +11,8 @@ import util.FileUtils;
 public class RegistryFactory {
 
 
-    public static Registry getRegistry(){
-        String registry = SimpleConfig.INSTANCE.get("registry");
+    public static Registry getRegistry() throws Exception {
+        String registry = Rpc.getInstace().getConfig().getRegistry();
         if (registry.toLowerCase().equals("zookeeper")) {
             return Zookeeper.INSTANCE;
         }
