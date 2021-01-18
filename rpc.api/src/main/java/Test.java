@@ -8,5 +8,5 @@ public interface Test {
 
     void test01(String string);
 
-    String test02(int integer);
+    String test02(Integer integer);
 }

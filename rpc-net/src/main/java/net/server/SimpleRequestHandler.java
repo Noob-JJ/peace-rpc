@@ -48,6 +48,9 @@ public class SimpleRequestHandler implements RequestHandler {
     }
 
     private boolean checkoutParamsCorrect(Method method, Object[] params) {
+        if (params == null || params.length == 0) {
+            return true;
+        }
         if (!(params.length == method.getParameterCount())) {
             return false;
         }
