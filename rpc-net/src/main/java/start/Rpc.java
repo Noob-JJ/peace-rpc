@@ -5,6 +5,9 @@ import config.ConfigTem;
 import config.SimpleConfig;
 import net.server.RpcServer;
 import net.server.SimpleRequestHandler;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import proxy.InvocationHandlerFactory;
 import regsitry.Registry;
 import regsitry.RegistryFactory;
@@ -22,7 +25,9 @@ import java.util.Properties;
  */
 public class Rpc {
 
-    public static ConfigTem config;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Rpc.class);
+
+    private static ConfigTem config;
 
     private static Rpc instace;
 
@@ -31,13 +36,18 @@ public class Rpc {
     }
 
     private void init() throws Exception {
+        LOGGER.info("rpc init start");
+        LOGGER.info("read config file");
         URL url = FileUtils.loadFile("META_INF/rpc.properties");
         Properties properties = new Properties();
         properties.load(url.openStream());
         SimpleConfig.INSTANCE.init(properties);
         changeConfig();
+        LOGGER.info("start registry service");
         registry();
+        LOGGER.info("start subscribe service");
         sub();
+        LOGGER.info("start server");
         RpcServer rpcServer = new RpcServer(Integer.parseInt(config.getProviderPort()), new SimpleRequestHandler());
         Thread thread = new Thread(() -> {
             rpcServer.start();
@@ -80,8 +90,7 @@ public class Rpc {
 
     public static Rpc getInstace() throws Exception {
         if (instace == null) {
-            // TODO: 2021/1/17 这里为什么会报错 单例模式不就是这么实现的吗
-            synchronized ("lock") {
+            synchronized (Rpc.class) {
                 if (instace == null) {
                     instace = new Rpc();
                     instace.init();
@@ -91,7 +100,6 @@ public class Rpc {
         return instace;
     }
 
-    // TODO: 2021/1/17 这里也看看json转换那边怎么实现的
     public <T> T getBean(Class<T> tClass) {
         return (T) InvocationHandlerFactory.getRpcProxy(tClass);
     }

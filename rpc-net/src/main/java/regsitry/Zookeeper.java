@@ -23,8 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 enum Zookeeper implements Registry {
     INSTANCE;
 
-    // TODO: 2021/1/17 这里需要优化一下， 我觉得 应该用provider来当value 因为从抽象来看一个className因该用一个provider来表示
-
     private static Map<String, Provider> provider = new ConcurrentHashMap<>();
 
     private static final int BASE_SLEEP_TIME = 1000;
@@ -79,7 +77,6 @@ enum Zookeeper implements Registry {
                     List<String> ipAndPorts = new ArrayList<>();
                     List<String> childNodes = zkClient.getChildren().forPath(classNamePath);
                     for (String childNode : childNodes) {
-                        System.out.println(childNode);
                         ipAndPorts.add(new String(zkClient.getData().forPath(classNamePath + "/" + childNode)));
                     }
                     provider.put(className, new Provider(implClassName, className, ipAndPorts));
@@ -107,7 +104,6 @@ enum Zookeeper implements Registry {
             List<String> ipAndPorts = new ArrayList<>();
             List<String> childNodes = zkClient.getChildren().forPath(path);
             for (String childNode : childNodes) {
-                System.out.println(childNode);
                 ipAndPorts.add(new String(zkClient.getData().forPath(path + "/" + childNode)));
             }
             return new Provider(implClassName, className, ipAndPorts);
