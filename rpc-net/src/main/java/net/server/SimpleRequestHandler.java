@@ -21,9 +21,6 @@ public class SimpleRequestHandler implements RequestHandler {
             RpcRequest request = (RpcRequest) new ObjectInputStream(inputStream).readObject();
             Class cls = Class.forName(request.getClassName());
             Method method = checkoutIfExistMethod(request.getMethodName(), cls);
-            if (!checkoutParamsCorrect(method, request.getParams())) {
-                throw new Exception("param error");
-            }
             Object obj = cls.newInstance();
             Object result = method.invoke(obj, request.getParams());
             response.setHasException(false);
