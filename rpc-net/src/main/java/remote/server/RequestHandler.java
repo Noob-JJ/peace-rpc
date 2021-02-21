@@ -1,6 +1,4 @@
-package net.server;
-
-import net.entity.RpcResponse;
+package remote.server;
 
 import java.io.IOException;
 import java.io.InputStream;

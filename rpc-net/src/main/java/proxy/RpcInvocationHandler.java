@@ -1,9 +1,9 @@
 package proxy;
 
 import entity.Provider;
-import net.client.RpcClient;
-import net.entity.RpcRequest;
-import net.entity.RpcResponse;
+import remote.client.RpcClient;
+import remote.dto.RpcRequest;
+import remote.dto.RpcResponse;
 import regsitry.RegistryFactory;
 
 import java.lang.reflect.InvocationHandler;

@@ -1,13 +1,11 @@
-package net.server;
+package remote.server;
 
-import net.entity.RpcRequest;
-import net.entity.RpcResponse;
-import start.Rpc;
-import util.KryoUtils;
+import remote.dto.RpcRequest;
+import remote.dto.RpcResponse;
+import util.serialize.SerializeFactory;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 /**
  * Created by JackJ on 2021/1/16.
@@ -33,7 +31,7 @@ public class SimpleRequestHandler implements RequestHandler {
             response.setResult(e);
         }
 
-        byte[] result = KryoUtils.serialize(response);
+        byte[] result = SerializeFactory.getSerializeUtil().serialize(response);
         outputStream.write(result);
     }
 
@@ -45,7 +43,7 @@ public class SimpleRequestHandler implements RequestHandler {
         byte[] result = new byte[length];
         System.arraycopy(buffer, 0, result, 0, length);
 
-        return KryoUtils.deserialize(RpcRequest.class, result);
+        return SerializeFactory.getSerializeUtil().deserialize(RpcRequest.class, result);
     }
 
     private Method checkoutIfExistMethod(String methodName, Class cls) throws Exception {

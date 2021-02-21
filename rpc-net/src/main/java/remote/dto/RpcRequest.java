@@ -1,4 +1,4 @@
-package net.entity;
+package remote.dto;
 
 import java.io.Serializable;
 
@@ -20,7 +20,7 @@ public class RpcRequest implements Serializable {
     }
 
 
-    public boolean checkParams(){
+    public boolean checkParams() {
         if (params == null || params.length == 0) {
             return true;
         }
@@ -32,17 +32,17 @@ public class RpcRequest implements Serializable {
         return true;
     }
 
-public String getClassName() {
+    public String getClassName() {
         return className;
-        }
+    }
 
-public void setClassName(String className) {
+    public void setClassName(String className) {
         this.className = className;
-        }
+    }
 
-public String getMethodName() {
+    public String getMethodName() {
         return methodName;
-        }
+    }
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
@@ -52,7 +52,7 @@ public String getMethodName() {
         this.params = params;
     }
 
-    public Object[] getParams(){
+    public Object[] getParams() {
         return params;
     }
 }

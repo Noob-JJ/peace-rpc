@@ -1,9 +1,8 @@
-package net.client;
+package remote.client;
 
-import com.esotericsoftware.kryo.Kryo;
-import net.entity.RpcRequest;
-import net.entity.RpcResponse;
-import util.KryoUtils;
+import remote.dto.RpcRequest;
+import remote.dto.RpcResponse;
+import util.serialize.SerializeFactory;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,14 +23,14 @@ public class RpcClient {
              InputStream inputStream = socket.getInputStream()) {
             socket.setSoTimeout(TIMEOUT_TIME);
 
-            byte[] request = KryoUtils.serialize(rpcRequest);
+            byte[] request = SerializeFactory.getSerializeUtil().serialize(rpcRequest);
             outputStream.write(request);
             int length = inputStream.read(buffer);
 
             byte[] result = new byte[length];
             System.arraycopy(buffer, 0, result, 0, length);
 
-            return KryoUtils.deserialize(RpcResponse.class, result);
+            return SerializeFactory.getSerializeUtil().deserialize(RpcResponse.class, result);
         } catch (Exception e) {
             e.printStackTrace();
         }
