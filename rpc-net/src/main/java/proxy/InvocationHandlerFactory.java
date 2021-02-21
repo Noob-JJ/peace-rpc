@@ -8,10 +8,11 @@ import java.lang.reflect.Proxy;
 public class InvocationHandlerFactory {
 
 
-    public static Object getRpcProxy(Class target){
+    public static <T> T getRpcProxy(Class<T> target){
         Class<?> cls[] = new Class[1];
         cls[0] = target;
-        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+
+        return (T)Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                 cls, new RpcInvocationHandler(target));
     }
 

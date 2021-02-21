@@ -5,19 +5,19 @@ package config;
  */
 public final class ConfigTem {
 
-    private final String registry;
+    private final String registry; //注册中心 类型
 
-    private final String registryHost;
+    private final String registryHost; //注册中心地址
 
-    private final String providerIp;
+    private final String providerIp; //提供者的ip
 
-    private final String providerPort;
+    private final String providerPort; //提供者端口号
 
-    private final String providerClass;
+    private final String providerClass;//提供类
 
-    private final String subcribeClass;
+    private final String subcribeClass;//订阅类
 
-    private final String name;
+    private final String name;//服务名
 
 
     public ConfigTem(String registry, String registryHost, String providerIp, String providerPort, String providerClass, String subcribeClass, String name) {

@@ -1,9 +1,6 @@
 package config;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,11 +28,7 @@ public enum SimpleConfig implements Config {
         if (!isInit) {
             synchronized (this) {
                 if (!isInit) {
-                    Map<String, String> exMap = (Map) properties;
-                    Set<Map.Entry<String, String>> entryIterator = exMap.entrySet();
-                    for (Map.Entry<String, String> entry : entryIterator) {
-                        config.put(entry.getKey(), entry.getValue());
-                    }
+                    properties.forEach((key, value) -> config.put(key.toString(), value.toString()));
                     isInit = true;
                 }
             }

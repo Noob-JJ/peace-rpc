@@ -13,6 +13,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooKeeper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 enum Zookeeper implements Registry {
     INSTANCE;
 
-    private static Map<String, Provider> provider = new ConcurrentHashMap<>();
+    private static final Map<String, Provider> provider = new ConcurrentHashMap<>();
 
     private static final int BASE_SLEEP_TIME = 1000;
 
@@ -41,7 +42,9 @@ enum Zookeeper implements Registry {
     public void registry(String serviceName, String className, String host, String port) throws Exception {
         String[] strings = className.split(":");
         String path = "/rpc/" + strings[0] + "/provider/node";
-        createNode(CreateMode.EPHEMERAL_SEQUENTIAL, path, serviceName + ":" + host + ":" + port);
+
+        zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(path, (serviceName + ":" + host + ":" + port).getBytes());
+
         zkClient.setData().forPath("/rpc/" + strings[0], strings[1].getBytes());
     }
 
@@ -53,14 +56,14 @@ enum Zookeeper implements Registry {
 
 
     @Override
-    public void subscribe(String[] classNames) throws Exception {
-        for (String className : classNames) {
-            addListener(className);
-        }
-    }
-
-    private void createNode(CreateMode mode, String name, String value) throws Exception {
-        zkClient.create().creatingParentsIfNeeded().withMode(mode).forPath(name, value.getBytes());
+    public void subscribe(String[] classNames) {
+        Arrays.stream(classNames).forEach(className -> {
+            try {
+                addListener(className);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void addListener(String className) throws Exception {

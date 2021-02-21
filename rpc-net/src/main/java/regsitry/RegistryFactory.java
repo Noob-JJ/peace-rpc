@@ -11,9 +11,9 @@ import util.FileUtils;
 public class RegistryFactory {
 
 
-    public static Registry getRegistry() throws Exception {
-        String registry = Rpc.getInstace().getConfig().getRegistry();
-        if (registry.toLowerCase().equals("zookeeper")) {
+    public static Registry getRegistry() {
+        String registry = Rpc.getConfig().getRegistry();
+        if (registry.equalsIgnoreCase("zookeeper")) {
             return Zookeeper.INSTANCE;
         }
         return Zookeeper.INSTANCE;

@@ -22,7 +22,7 @@ public class Provider {
     }
 
 
-    public Node getNode(){
+    public Node getNode() {
         if (hostAndPort == null || hostAndPort.size() == 0) {
             throw new RuntimeException("not find provider for" + this.getClassName());
         } else if (hostAndPort.size() == 1) {
@@ -31,8 +31,7 @@ public class Provider {
         } else if (SimpleConfig.INSTANCE.get("rpc.load.balance") == null) {
             String[] infos = hostAndPort.get(0).split(":");
             return new Node(infos[0], infos[1], infos[2]);
-        }
-        else{
+        } else {
             String[] infos = hostAndPort.get(0).split(":");
             return new Node(infos[0], infos[1], infos[2]);
         }
@@ -48,11 +47,11 @@ public class Provider {
         return implClassName;
     }
 
-    public static class Node{
+    public static class Node {
         private String serviceName;
-        
+
         private String host;
-        
+
         private int port;
 
         private Node(String serviceName, String host, String port) {

@@ -1,5 +1,6 @@
 package start;
 
+import com.google.common.base.Objects;
 import config.Config;
 import config.ConfigTem;
 import config.SimpleConfig;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -38,7 +40,7 @@ public class Rpc {
     private void init() throws Exception {
         LOGGER.info("rpc init start");
         LOGGER.info("read config file");
-        URL url = FileUtils.loadFile("META_INF/rpc.properties");
+        URL url = FileUtils.loadFile("META-INF/rpc.properties");
         Properties properties = new Properties();
         properties.load(url.openStream());
         SimpleConfig.INSTANCE.init(properties);
@@ -49,30 +51,33 @@ public class Rpc {
         sub();
         LOGGER.info("start server");
         RpcServer rpcServer = new RpcServer(Integer.parseInt(config.getProviderPort()), new SimpleRequestHandler());
-        Thread thread = new Thread(() -> {
-            rpcServer.start();
-            // TODO: 2021/1/17 怎么替换 
-        });
+        Thread thread = new Thread(rpcServer::start);
         thread.start();
     }
 
-    private void sub() throws Exception {
+    private void registry() {
         Registry registry = RegistryFactory.getRegistry();
-        String[] classNames = config.getSubcribeClass().split(",");
-        registry.subscribe(classNames);
-    }
 
-    private void registry() throws Exception {
-        Registry registry = RegistryFactory.getRegistry();
         String[] classNames = config.getProviderClass().split(",");
         String name = config.getName();
         String port = config.getProviderPort();
         String ip = config.getProviderIp();
-        for (String className : classNames) {
-            if(!className.equals("")) {
+
+        Arrays.stream(classNames).filter(className -> className != null && className.length() != 0).forEach(className -> {
+            try {
                 registry.registry(name, className, ip, port);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
+        });
+    }
+
+    private void sub() throws Exception {
+        Registry registry = RegistryFactory.getRegistry();
+
+        String[] classNames = config.getSubcribeClass().split(",");
+
+        registry.subscribe(classNames);
     }
 
     private void changeConfig() throws UnknownHostException {

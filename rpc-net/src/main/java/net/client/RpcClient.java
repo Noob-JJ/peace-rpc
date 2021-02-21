@@ -1,6 +1,9 @@
 package net.client;
 
+import com.esotericsoftware.kryo.Kryo;
 import net.entity.RpcRequest;
+import net.entity.RpcResponse;
+import util.KryoUtils;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,13 +16,22 @@ public class RpcClient {
 
     private static final int TIMEOUT_TIME = 9 * 1000;
 
-    public static Object request(RpcRequest rpcRequest, String host, int port) {
-        try(Socket socket = new Socket(host, port)) {
+    public static RpcResponse request(RpcRequest rpcRequest, String host, int port) {
+        byte[] buffer = new byte[1024 * 1024];
+
+        try (Socket socket = new Socket(host, port);
+             OutputStream outputStream = socket.getOutputStream();
+             InputStream inputStream = socket.getInputStream()) {
             socket.setSoTimeout(TIMEOUT_TIME);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            objectOutputStream.writeObject(rpcRequest);
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-            return objectInputStream.readObject();
+
+            byte[] request = KryoUtils.serialize(rpcRequest);
+            outputStream.write(request);
+            int length = inputStream.read(buffer);
+
+            byte[] result = new byte[length];
+            System.arraycopy(buffer, 0, result, 0, length);
+
+            return KryoUtils.deserialize(RpcResponse.class, result);
         } catch (Exception e) {
             e.printStackTrace();
         }

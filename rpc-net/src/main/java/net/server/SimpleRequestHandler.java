@@ -3,6 +3,7 @@ package net.server;
 import net.entity.RpcRequest;
 import net.entity.RpcResponse;
 import start.Rpc;
+import util.KryoUtils;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -18,19 +19,33 @@ public class SimpleRequestHandler implements RequestHandler {
     public void handler(InputStream inputStream, OutputStream outputStream) throws IOException {
         RpcResponse response = new RpcResponse();
         try {
-            RpcRequest request = (RpcRequest) new ObjectInputStream(inputStream).readObject();
-            Class cls = Class.forName(request.getClassName());
+            RpcRequest request = readData(inputStream);
+
+            Class<?> cls = Class.forName(request.getClassName());
             Method method = checkoutIfExistMethod(request.getMethodName(), cls);
             Object obj = cls.newInstance();
             Object result = method.invoke(obj, request.getParams());
+
             response.setHasException(false);
             response.setResult(result);
         } catch (Exception e) {
             response.setHasException(true);
             response.setResult(e);
         }
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-        objectOutputStream.writeObject(response);
+
+        byte[] result = KryoUtils.serialize(response);
+        outputStream.write(result);
+    }
+
+    private RpcRequest readData(InputStream inputStream) throws IOException {
+        byte[] buffer = new byte[1024 * 1024]; // TODO: 2021/2/21 这个应该变为可以进行配置的
+
+        int length = inputStream.read(buffer); // TODO: 2021/2/21 这里我总感觉我从来没有搞清楚过 我就不知道我 读没读完或者 应该怎么读 有没有可能我读一半就读不到了？
+
+        byte[] result = new byte[length];
+        System.arraycopy(buffer, 0, result, 0, length);
+
+        return KryoUtils.deserialize(RpcRequest.class, result);
     }
 
     private Method checkoutIfExistMethod(String methodName, Class cls) throws Exception {
