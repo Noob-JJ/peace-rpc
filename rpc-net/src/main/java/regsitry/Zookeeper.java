@@ -85,13 +85,13 @@ enum Zookeeper implements Registry {
                     provider.put(className, new Provider(implClassName, className, ipAndPorts));
                     break;
                 case CONNECTION_LOST:
-                    break;
+
                 case CONNECTION_RECONNECTED:
-                    break;
+
                 case CONNECTION_SUSPENDED:
-                    break;
+
                 case INITIALIZED:
-                    break;
+
                 default:
                     break;
             }
@@ -114,7 +114,4 @@ enum Zookeeper implements Registry {
         return provider.get(className);
     }
 
-    public static void main(String[] args) throws Exception {
-
-    }
 }

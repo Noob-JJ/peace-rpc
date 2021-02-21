@@ -58,23 +58,4 @@ public class SimpleRequestHandler implements RequestHandler {
         }
         throw new Exception("not found method:" + methodName);
     }
-
-    private boolean checkoutParamsCorrect(Method method, Object[] params) {
-        if (params == null || params.length == 0) {
-            return true;
-        }
-        if (!(params.length == method.getParameterCount())) {
-            return false;
-        }
-        else{
-            Class[] clss = method.getParameterTypes();
-            for(int i = 0;i < params.length;i++) {
-                if (params[i].getClass() != clss[i]) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
 }
