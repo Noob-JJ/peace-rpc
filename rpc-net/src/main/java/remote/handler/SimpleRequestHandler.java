@@ -37,9 +37,9 @@ public class SimpleRequestHandler implements RequestHandler {
     }
 
     private RpcRequest readData(InputStream inputStream) throws IOException {
-        byte[] buffer = new byte[1024 * 1024]; // TODO: 2021/2/21 这个应该变为可以进行配置的
+        byte[] buffer = new byte[1024 * 1024];
 
-        int length = inputStream.read(buffer); // TODO: 2021/2/21 这里我总感觉我从来没有搞清楚过 我就不知道我 读没读完或者 应该怎么读 有没有可能我读一半就读不到了？
+        int length = inputStream.read(buffer);
 
         byte[] result = new byte[length];
         System.arraycopy(buffer, 0, result, 0, length);
