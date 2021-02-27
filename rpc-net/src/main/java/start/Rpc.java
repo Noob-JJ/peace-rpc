@@ -4,7 +4,7 @@ import config.Config;
 import config.ConfigTem;
 import config.SimpleConfig;
 import remote.server.RpcServer;
-import remote.server.SimpleRequestHandler;
+import remote.handler.SimpleRequestHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

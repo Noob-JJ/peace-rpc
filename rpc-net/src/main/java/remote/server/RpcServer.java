@@ -1,5 +1,7 @@
 package remote.server;
 
+import remote.handler.RequestHandler;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,7 +10,7 @@ import java.util.concurrent.*;
 /**
  * Created by JackJ on 2021/1/16.
  */
-public class RpcServer {
+public class RpcServer implements Server{
 
     private int port;
 

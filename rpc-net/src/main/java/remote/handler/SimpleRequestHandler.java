@@ -1,7 +1,8 @@
-package remote.server;
+package remote.handler;
 
 import remote.dto.RpcRequest;
 import remote.dto.RpcResponse;
+import remote.handler.RequestHandler;
 import util.serialize.SerializeFactory;
 
 import java.io.*;
