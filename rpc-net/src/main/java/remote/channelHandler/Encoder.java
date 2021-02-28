@@ -19,8 +19,9 @@ public class Encoder extends MessageToByteEncoder<RpcMessage> {
 
         RpcHeader header = rpcMessage.getHeader();
 
-        if (header.getMessageType() == MESSAGE_TYPE_DATA) {
-            byte[] data = CompressUtil.compress(new KryoUtils().serialize(rpcMessage.getDate()), header.getCompressType());
+        if (header.getMessageType() == MESSAGE_TYPE_REQUEST || header.getMessageType() == MESSAGE_TYPE_RESPONSE) {
+            byte[] data = CompressUtil.compress(new KryoUtils().serialize(rpcMessage.getData()), header.getCompressType());
+            header.setDataLength(data.length);
             puddingBuffer(byteBuf, header, data);
         }
 

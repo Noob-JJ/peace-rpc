@@ -8,4 +8,9 @@ public class CompressUtil {
         // TODO: 2021/2/27 实际压缩
         return data;
     }
+
+    public static byte[] unZip(byte[] data, int type) {
+
+        return data;
+    }
 }

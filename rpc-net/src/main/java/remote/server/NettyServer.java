@@ -7,6 +7,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import remote.channelHandler.DeCoder;
+import remote.channelHandler.Encoder;
+import remote.channelHandler.NettyRequestHandler;
 import remote.handler.RequestHandler;
 
 import java.net.InetSocketAddress;
@@ -42,9 +45,12 @@ public class NettyServer implements Server {
 
                         @Override
                         protected void initChannel(SocketChannel sc) throws Exception {
-                            //sc.pipeline().addLast();
+                            sc.pipeline().addLast(new DeCoder());
+                            sc.pipeline().addLast(new Encoder());
+                            sc.pipeline().addLast(businessThreadPool, new NettyRequestHandler(requestHandler));
                         }
                     });
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

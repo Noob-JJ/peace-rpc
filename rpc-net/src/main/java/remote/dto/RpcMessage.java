@@ -2,16 +2,20 @@ package remote.dto;
 
 public class RpcMessage {
 
-    public Object getDate() {
-        return date;
+    public RpcMessage(RpcHeader header, Object data) {
+        this.header = header;
+        this.data = data;
+    }
+
+    private RpcHeader header;
+
+    private Object data;
+
+    public Object getData() {
+        return data;
     }
 
     public RpcHeader getHeader() {
         return header;
     }
-
-    private RpcHeader header;
-
-    private Object date;
-
 }

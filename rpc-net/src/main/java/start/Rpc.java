@@ -3,6 +3,7 @@ package start;
 import config.Config;
 import config.ConfigTem;
 import config.SimpleConfig;
+import remote.server.NettyServer;
 import remote.server.RpcServer;
 import remote.handler.SimpleRequestHandler;
 
@@ -47,7 +48,7 @@ public class Rpc {
         LOGGER.info("start subscribe service");
         sub();
         LOGGER.info("start server");
-        RpcServer rpcServer = new RpcServer(Integer.parseInt(config.getProviderPort()), new SimpleRequestHandler());
+        NettyServer rpcServer = new NettyServer(Integer.parseInt(config.getProviderPort()), new SimpleRequestHandler());
         Thread thread = new Thread(rpcServer::start);
         thread.start();
     }
