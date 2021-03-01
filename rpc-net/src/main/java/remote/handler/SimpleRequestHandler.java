@@ -1,5 +1,6 @@
 package remote.handler;
 
+import remote.dto.RpcMessage;
 import remote.dto.RpcRequest;
 import remote.dto.RpcResponse;
 import remote.handler.RequestHandler;
@@ -13,12 +14,11 @@ import java.lang.reflect.Method;
  */
 public class SimpleRequestHandler implements RequestHandler {
 
-
     @Override
-    public void handler(InputStream inputStream, OutputStream outputStream) throws IOException {
+    public RpcResponse handler(RpcMessage rpcMessage) throws IOException {
         RpcResponse response = new RpcResponse();
         try {
-            RpcRequest request = readData(inputStream);
+            RpcRequest request = (RpcRequest) rpcMessage.getData();
 
             Class<?> cls = Class.forName(request.getClassName());
             Method method = checkoutIfExistMethod(request.getMethodName(), cls);
@@ -32,8 +32,7 @@ public class SimpleRequestHandler implements RequestHandler {
             response.setResult(e);
         }
 
-        byte[] result = SerializeFactory.getSerializeUtil().serialize(response);
-        outputStream.write(result);
+        return response;
     }
 
     private RpcRequest readData(InputStream inputStream) throws IOException {
@@ -47,7 +46,7 @@ public class SimpleRequestHandler implements RequestHandler {
         return SerializeFactory.getSerializeUtil().deserialize(RpcRequest.class, result);
     }
 
-    private Method checkoutIfExistMethod(String methodName, Class cls) throws Exception {
+    private Method checkoutIfExistMethod(String methodName, Class<?> cls) throws Exception {
         Method[] methods = cls.getDeclaredMethods();
         for (Method method : methods) {
             method.setAccessible(true);
