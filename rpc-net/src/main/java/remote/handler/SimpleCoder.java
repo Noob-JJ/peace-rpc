@@ -11,8 +11,9 @@ import util.serialize.KryoUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
-public class SimpleDecoder {
+public class SimpleCoder {
 
     public RpcMessage decode(InputStream inputStream) throws IOException {
 
@@ -26,8 +27,44 @@ public class SimpleDecoder {
     }
 
     public byte[] encode(RpcMessage message) {
-        // TODO: 2021/3/1 待做
-        return null;
+
+        byte[] data = compressAndSerialize(message);
+        message.getHeader().setDataLength(data.length);
+
+        byte[] headerBytes = getHeaderByte(message.getHeader());
+
+        return paddingByteArray(headerBytes, data);
+    }
+
+    public byte[] paddingByteArray(byte[] header, byte[] data) {
+
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[header.length + data.length]);
+
+        byteBuffer.put(header);
+        byteBuffer.put(data);
+
+        return byteBuffer.array();
+    }
+
+    private byte[] compressAndSerialize(RpcMessage rpcMessage) {
+
+        return CompressUtil.compress(new KryoUtils().serialize(rpcMessage.getData()), rpcMessage.getHeader().getCompressType());
+    }
+
+    private byte[] getHeaderByte(RpcHeader header) {
+
+        byte[] headerBytes = new byte[12];
+        int position = 0;
+
+        System.arraycopy(header.getMagicNum(), 0, headerBytes, 0, RpcConstant.PROTOCOL_HEADER_MAGIC_NUM.length);
+        position += RpcConstant.PROTOCOL_HEADER_MAGIC_NUM.length;
+        headerBytes[++position] = header.getVersion();
+        System.arraycopy(ByteUtils.intToBytes(header.getDataLength()), 0, headerBytes, ++position, 4);
+        headerBytes[++position] = header.getMessageType();
+        headerBytes[++position] = header.getCompressType();
+        headerBytes[++position] = header.getSerializeType();
+
+        return headerBytes;
     }
 
     private RpcHeader analysisHeader(InputStream inputStream) throws IOException {

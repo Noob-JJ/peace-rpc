@@ -6,11 +6,10 @@ import remote.dto.RpcMessage;
 import remote.dto.RpcRequest;
 import remote.dto.RpcResponse;
 import remote.handler.RequestHandler;
-import remote.handler.SimpleDecoder;
+import remote.handler.SimpleCoder;
 import util.ByteUtils;
 import util.compress.CompressUtil;
 import util.serialize.KryoUtils;
-import util.serialize.SerializeFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,7 +44,7 @@ public class RpcServer implements Server {
                 threadPool.execute(() -> {
                     try (InputStream inputStream = socket.getInputStream();
                          OutputStream outputStream = socket.getOutputStream()) {
-                        RpcMessage rpcMessage = new SimpleDecoder().decode(inputStream);
+                        RpcMessage rpcMessage = new SimpleCoder().decode(inputStream);
                         requestHandler.handler(rpcMessage);
                     } catch (IOException e) {
                         e.printStackTrace();
