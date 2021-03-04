@@ -15,7 +15,7 @@ import java.nio.ByteBuffer;
 
 public class SimpleCoder {
 
-    public RpcMessage decode(InputStream inputStream) throws IOException {
+    public static RpcMessage decode(InputStream inputStream) throws IOException {
 
         RpcHeader rpcHeader = analysisHeader(inputStream);
         byte[] dataBytes = new byte[rpcHeader.getDataLength()];
@@ -26,7 +26,7 @@ public class SimpleCoder {
         return new RpcMessage(rpcHeader, data);
     }
 
-    public byte[] encode(RpcMessage message) {
+    public static byte[] encode(RpcMessage message) {
 
         byte[] data = compressAndSerialize(message);
         message.getHeader().setDataLength(data.length);
@@ -36,7 +36,7 @@ public class SimpleCoder {
         return paddingByteArray(headerBytes, data);
     }
 
-    public byte[] paddingByteArray(byte[] header, byte[] data) {
+    public static byte[] paddingByteArray(byte[] header, byte[] data) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[header.length + data.length]);
 
@@ -46,12 +46,27 @@ public class SimpleCoder {
         return byteBuffer.array();
     }
 
-    private byte[] compressAndSerialize(RpcMessage rpcMessage) {
+    public static RpcMessage genMessage(Object data) {
+
+        RpcHeader rpcHeader = new RpcHeader();
+        rpcHeader.setMessageType(RpcConstant.DEFAULT_SERIALIZE_TYPE)
+                .setCompressType(RpcConstant.DEFAULT_COMPRESS_TYPE)
+                .setVersion(RpcConstant.PROTOCOL_HEADER_VERSION)
+                .setMagicNum(RpcConstant.PROTOCOL_HEADER_MAGIC_NUM)
+                .setDataLength(-1)
+                .setMessageType(data instanceof RpcRequest ? RpcConstant.MESSAGE_TYPE_REQUEST :
+                        RpcConstant.MESSAGE_TYPE_RESPONSE);
+
+
+        return new RpcMessage(rpcHeader, data);
+    }
+
+    private static byte[] compressAndSerialize(RpcMessage rpcMessage) {
 
         return CompressUtil.compress(new KryoUtils().serialize(rpcMessage.getData()), rpcMessage.getHeader().getCompressType());
     }
 
-    private byte[] getHeaderByte(RpcHeader header) {
+    private static byte[] getHeaderByte(RpcHeader header) {
 
         byte[] headerBytes = new byte[12];
         int position = 0;
@@ -67,7 +82,7 @@ public class SimpleCoder {
         return headerBytes;
     }
 
-    private RpcHeader analysisHeader(InputStream inputStream) throws IOException {
+    private static RpcHeader analysisHeader(InputStream inputStream) throws IOException {
         byte[] magicNum = new byte[RpcConstant.PROTOCOL_HEADER_MAGIC_NUM.length];
         byte version;
         byte[] dataLength = new byte[4];
@@ -90,7 +105,7 @@ public class SimpleCoder {
                 .setMessageType(messageType);
     }
 
-    private void read(InputStream inputStream, byte[] buffer) {
+    private static void read(InputStream inputStream, byte[] buffer) {
 
         try {
             int size = inputStream.read(buffer);
@@ -103,7 +118,7 @@ public class SimpleCoder {
 
     }
 
-    private Object deserializeAndUnzip(RpcHeader header, byte[] data) {
+    private static Object deserializeAndUnzip(RpcHeader header, byte[] data) {
 
         byte[] unZipData = CompressUtil.unZip(data, header.getCompressType());
 

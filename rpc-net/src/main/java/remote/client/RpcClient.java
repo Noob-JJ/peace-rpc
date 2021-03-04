@@ -1,7 +1,11 @@
 package remote.client;
 
+import common.RpcConstant;
+import remote.dto.RpcHeader;
+import remote.dto.RpcMessage;
 import remote.dto.RpcRequest;
 import remote.dto.RpcResponse;
+import remote.handler.SimpleCoder;
 import util.serialize.SerializeFactory;
 
 import java.io.*;
@@ -21,16 +25,17 @@ public class RpcClient {
         try (Socket socket = new Socket(host, port);
              OutputStream outputStream = socket.getOutputStream();
              InputStream inputStream = socket.getInputStream()) {
+
             socket.setSoTimeout(TIMEOUT_TIME);
 
-            byte[] request = SerializeFactory.getSerializeUtil().serialize(rpcRequest);
-            outputStream.write(request);
-            int length = inputStream.read(buffer);
+            RpcMessage requestMessage = SimpleCoder.genMessage(rpcRequest);
+            byte[] requestBytes = SimpleCoder.encode(requestMessage);
 
-            byte[] result = new byte[length];
-            System.arraycopy(buffer, 0, result, 0, length);
+            outputStream.write(requestBytes);
 
-            return SerializeFactory.getSerializeUtil().deserialize(RpcResponse.class, result);
+            RpcMessage responseMessage = SimpleCoder.decode(inputStream);
+
+            return (RpcResponse) responseMessage.getData();
         } catch (Exception e) {
             e.printStackTrace();
         }
