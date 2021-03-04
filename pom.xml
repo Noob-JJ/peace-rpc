@@ -11,7 +11,8 @@
     <modules>
         <module>rpc-net</module>
         <module>rpc.api</module>
-        <module>springboot-starter</module>
+        <module>consumer</module>
+        <module>provider</module>
     </modules>
 
 

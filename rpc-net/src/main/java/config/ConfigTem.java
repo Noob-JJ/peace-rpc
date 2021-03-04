@@ -5,56 +5,80 @@ package config;
  */
 public final class ConfigTem {
 
-    private final String registry; //注册中心 类型
-
-    private final String registryHost; //注册中心地址
-
-    private final String providerIp; //提供者的ip
-
-    private final String providerPort; //提供者端口号
-
-    private final String providerClass;//提供类
-
-    private final String subcribeClass;//订阅类
-
-    private final String name;//服务名
-
-
-    public ConfigTem(String registry, String registryHost, String providerIp, String providerPort, String providerClass, String subcribeClass, String name) {
-        this.name = name == null ? "defaultName" : name;
-        this.registry = registry == null ? "zookeeper" : registry;
-        this.registryHost = registryHost == null ? "" : registryHost;
-        this.providerIp = providerIp == null ? "" : providerIp;
-        this.providerPort = providerPort == null ? "" : "333";
-        this.providerClass = providerClass == null ? "" : providerClass;
-        this.subcribeClass = subcribeClass == null ? "" : subcribeClass;
-    }
-
     public String getRegistry() {
         return registry;
+    }
+
+    public ConfigTem setRegistry(String registry) {
+        this.registry = registry;
+        return this;
     }
 
     public String getRegistryHost() {
         return registryHost;
     }
 
-    public String getProviderPort() {
-        return providerPort;
-    }
-
-    public String getProviderClass() {
-        return providerClass;
-    }
-
-    public String getSubcribeClass() {
-        return subcribeClass;
+    public ConfigTem setRegistryHost(String registryHost) {
+        this.registryHost = registryHost;
+        return this;
     }
 
     public String getProviderIp() {
         return providerIp;
     }
 
+    public ConfigTem setProviderIp(String providerIp) {
+        this.providerIp = providerIp;
+        return this;
+    }
+
+    public String getProviderPort() {
+        return providerPort;
+    }
+
+    public ConfigTem setProviderPort(String providerPort) {
+        this.providerPort = providerPort;
+        return this;
+    }
+
+    public String getProviderClass() {
+        return providerClass;
+    }
+
+    public ConfigTem setProviderClass(String providerClass) {
+        this.providerClass = providerClass;
+        return this;
+    }
+
+    public String getSubscribeClass() {
+        return subscribeClass;
+    }
+
+    public ConfigTem setSubscribeClass(String subscribeClass) {
+        this.subscribeClass = subscribeClass;
+        return this;
+    }
+
     public String getName() {
         return name;
     }
+
+    public ConfigTem setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    private String registry = "zookeeper"; //注册中心 类型
+
+    private String registryHost; //注册中心地址
+
+    private String providerIp; //提供者的ip
+
+    private String providerPort = "333"; //提供者端口号
+
+    private String providerClass;//提供类
+
+    private String subscribeClass;//订阅类
+
+    private String name = "defaultName";//服务名
 }

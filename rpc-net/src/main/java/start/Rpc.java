@@ -1,5 +1,6 @@
 package start;
 
+import com.google.common.base.Strings;
 import config.Config;
 import config.ConfigTem;
 import config.SimpleConfig;
@@ -54,9 +55,15 @@ public class Rpc {
     }
 
     private void registry() {
+        String providerClasses = config.getProviderClass();
+
+        if (Strings.isNullOrEmpty(providerClasses)) {
+            return ;
+        }
+
         Registry registry = RegistryFactory.getRegistry();
 
-        String[] classNames = config.getProviderClass().split(",");
+        String[] classNames = providerClasses.split(",");
         String name = config.getName();
         String port = config.getProviderPort();
         String ip = config.getProviderIp();
@@ -73,25 +80,31 @@ public class Rpc {
     private void sub() throws Exception {
         Registry registry = RegistryFactory.getRegistry();
 
-        String[] classNames = config.getSubcribeClass().split(",");
+        String[] classNames = config.getSubscribeClass().split(",");
 
         registry.subscribe(classNames);
     }
 
     private void changeConfig() throws UnknownHostException {
         Config simpleConfig = SimpleConfig.INSTANCE;
-        InetAddress addr = InetAddress.getLocalHost();
+        InetAddress address = InetAddress.getLocalHost();
         String registry = simpleConfig.get("rpc.registry");
         String registryHost = simpleConfig.get("rpc.registry.host");
-        String providerIp = addr.getHostAddress();
+        String providerIp = address.getHostAddress();
         String providerPort = simpleConfig.get("rpc.provider.port");
         String providerClass = simpleConfig.get("rpc.provider.class");
-        String subcribeClass = simpleConfig.get("rpc.subcribe.class");
+        String subscribeClass = simpleConfig.get("rpc.subscribe.class");
         String name = simpleConfig.get("rpc.name");
-        config = new ConfigTem(registry, registryHost, providerIp, providerPort, providerClass, subcribeClass, name);
+        config = new ConfigTem().setName(name)
+                .setProviderClass(providerClass)
+                .setProviderIp(providerIp)
+                .setProviderPort(providerPort)
+                .setRegistry(registry)
+                .setRegistryHost(registryHost)
+                .setSubscribeClass(subscribeClass);
     }
 
-    public static Rpc getInstace() throws Exception {
+    public static Rpc getInstance() throws Exception {
         if (instace == null) {
             synchronized (Rpc.class) {
                 if (instace == null) {
