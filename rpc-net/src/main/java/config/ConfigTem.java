@@ -80,5 +80,5 @@ public final class ConfigTem {
 
     private String subscribeClass;//订阅类
 
-    private String name = "defaultName";//服务名
+    private String name;//服务名
 }

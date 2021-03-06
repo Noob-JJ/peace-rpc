@@ -1,5 +1,9 @@
 package config;
 
+import util.FileUtils;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,7 +15,16 @@ public enum SimpleConfig implements Config {
 
     private static final Map<String, String> config = new ConcurrentHashMap<>();
 
-    private static boolean isInit = false;
+    static {
+        try {
+            URL url = FileUtils.loadFile("META-INF/rpc.properties");
+            Properties properties = new Properties();
+            properties.load(url.openStream());
+            properties.forEach((key, value) -> config.put(key.toString(), value.toString()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public String get(String key) {
@@ -21,18 +34,6 @@ public enum SimpleConfig implements Config {
     @Override
     public void put(String key, String value) {
         config.put(key, value);
-    }
-
-    @Override
-    public void init(Properties properties) {
-        if (!isInit) {
-            synchronized (this) {
-                if (!isInit) {
-                    properties.forEach((key, value) -> config.put(key.toString(), value.toString()));
-                    isInit = true;
-                }
-            }
-        }
     }
 
 

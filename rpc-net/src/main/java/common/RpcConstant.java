@@ -13,4 +13,6 @@ public class RpcConstant {
     public static final byte DEFAULT_SERIALIZE_TYPE = 0;
     public static final byte DEFAULT_COMPRESS_TYPE = 0;
 
+    public static final String ROOT_NODE_REGISTRY = "/rpc";
+
 }

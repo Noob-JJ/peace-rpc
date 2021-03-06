@@ -1,17 +1,19 @@
 package regsitry;
 
 import entity.Provider;
+import io.netty.resolver.InetSocketAddressResolver;
 import org.apache.zookeeper.CreateMode;
+
+import java.net.InetSocketAddress;
+import java.util.List;
 
 /**
  * Created by JackJ on 2021/1/16.
  */
 public interface Registry {
 
-    void registry(String serviceName, String className, String host, String port) throws Exception;
+    void registry(String serviceName, InetSocketAddress inetSocketAddress);
 
-    Provider getProvider(String className) throws Exception;
-
-    void subscribe(String[] className) throws Exception;
+    List<String> getNode(String service);
 
 }

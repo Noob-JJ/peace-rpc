@@ -35,6 +35,8 @@ public class RpcClient {
 
             RpcMessage responseMessage = SimpleCoder.decode(inputStream);
 
+            // TODO: 2021/3/6 checkmessage
+
             return (RpcResponse) responseMessage.getData();
         } catch (Exception e) {
             e.printStackTrace();

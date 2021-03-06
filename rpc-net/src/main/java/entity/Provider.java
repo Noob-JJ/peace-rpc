@@ -15,14 +15,12 @@ public class Provider {
 
     private List<String> hostAndPort;
 
-    public Provider(String implClassName, String className, List<String> hostAndPort) {
-        this.implClassName = implClassName;
-        this.className = className;
+    public Provider(List<String> hostAndPort) {
         this.hostAndPort = hostAndPort;
     }
 
 
-    public Node getNode() {
+    public Node peekNode() {
         if (hostAndPort == null || hostAndPort.size() == 0) {
             throw new RuntimeException("not find provider for" + this.getClassName());
         } else if (hostAndPort.size() == 1) {

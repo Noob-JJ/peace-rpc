@@ -10,6 +10,4 @@ public interface Config {
     String get(String key);
 
     void put(String key, String value);
-
-    void init(Properties properties);
 }
