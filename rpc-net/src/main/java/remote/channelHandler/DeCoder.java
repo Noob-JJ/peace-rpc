@@ -27,6 +27,7 @@ public class DeCoder extends LengthFieldBasedFrameDecoder {
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+        System.out.println("decode");
         ByteBuf decoded = (ByteBuf) super.decode(ctx, in);
         RpcHeader header = getDecodeHeader(decoded);
 

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import proxy.InvocationHandlerFactory;
 import regsitry.Registry;
 import regsitry.RegistryFactory;
+import remote.server.Server;
 import util.FileUtils;
 
 import java.net.InetAddress;
@@ -46,8 +47,8 @@ public class Rpc {
     }
 
     public void start() {
-        RpcServer rpcServer = new RpcServer(Integer.parseInt(SimpleConfig.INSTANCE.get("provider.port")), new SimpleRequestHandler());
-        rpcServer.start();
+        Server nettyServer = new NettyServer(Integer.parseInt(SimpleConfig.INSTANCE.get("provider.port")), new SimpleRequestHandler());
+        nettyServer.start();
     }
 
     public Rpc registry(Class<?> registryService) {

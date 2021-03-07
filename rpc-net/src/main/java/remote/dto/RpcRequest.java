@@ -11,13 +11,16 @@ public class RpcRequest implements Serializable {
 
     private String methodName;
 
+    private String requestId;
+
     private Object[] params;
 
     public RpcRequest() {
 
     }
 
-    public RpcRequest(String className, String methodName, Object[] params) {
+    public RpcRequest(String requestId, String className, String methodName, Object[] params) {
+        this.requestId = requestId;
         this.className = className;
         this.methodName = methodName;
         this.params = params;
@@ -58,5 +61,9 @@ public class RpcRequest implements Serializable {
 
     public Object[] getParams() {
         return params;
+    }
+
+    public String getRequestId() {
+        return requestId;
     }
 }

@@ -1,11 +1,12 @@
 package remote.channelHandler;
 
 import common.RpcConstant;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.DefaultEventLoopGroup;
+import io.netty.channel.*;
+import io.netty.util.ReferenceCountUtil;
 import remote.dto.RpcMessage;
+import remote.dto.RpcResponse;
 import remote.handler.RequestHandler;
+import remote.handler.SimpleCoder;
 
 public class NettyRequestHandler extends ChannelInboundHandlerAdapter {
 
@@ -22,8 +23,22 @@ public class NettyRequestHandler extends ChannelInboundHandlerAdapter {
             RpcMessage message = (RpcMessage) msg;
 
             if (message.getHeader().getMessageType() == RpcConstant.MESSAGE_TYPE_REQUEST) {
-                requestHandler.handler(message);
+
+                RpcResponse response = requestHandler.handler(message);
+                RpcMessage responseMessage = SimpleCoder.genMessage(response);
+
+                ctx.writeAndFlush(responseMessage).addListener((ChannelFutureListener) future -> {
+                    if (!future.isSuccess()) {
+                        System.out.println("error");
+                        try {
+                            throw future.cause();
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    }
+                });
             }
         }
+        ReferenceCountUtil.release(msg);
     }
 }

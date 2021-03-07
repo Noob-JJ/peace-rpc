@@ -16,6 +16,7 @@ public class Encoder extends MessageToByteEncoder<RpcMessage> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RpcMessage rpcMessage, ByteBuf byteBuf) {
+        System.out.println("encode");
 
         RpcHeader header = rpcMessage.getHeader();
 

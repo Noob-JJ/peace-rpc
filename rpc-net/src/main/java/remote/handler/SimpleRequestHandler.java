@@ -25,6 +25,7 @@ public class SimpleRequestHandler implements RequestHandler {
             Object obj = cls.newInstance();
             Object result = method.invoke(obj, request.getParams());
 
+            response.setRequestId(request.getRequestId());
             response.setHasException(false);
             response.setResult(result);
         } catch (Exception e) {

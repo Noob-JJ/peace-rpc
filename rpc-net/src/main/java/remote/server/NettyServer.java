@@ -1,6 +1,7 @@
 package remote.server;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.channel.EventLoopGroup;
@@ -45,11 +46,14 @@ public class NettyServer implements Server {
 
                         @Override
                         protected void initChannel(SocketChannel sc) throws Exception {
-                            sc.pipeline().addLast(new DeCoder());
                             sc.pipeline().addLast(new Encoder());
+                            sc.pipeline().addLast(new DeCoder());
                             sc.pipeline().addLast(businessThreadPool, new NettyRequestHandler(requestHandler));
                         }
                     });
+
+            ChannelFuture channelFuture = bootstrap.bind().sync();
+            channelFuture.channel().closeFuture().sync();
 
         } catch (Exception e) {
             e.printStackTrace();

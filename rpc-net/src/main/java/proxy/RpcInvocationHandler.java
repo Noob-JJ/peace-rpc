@@ -2,6 +2,7 @@ package proxy;
 
 import config.SimpleConfig;
 import entity.Provider;
+import remote.client.NettyRpcClient;
 import remote.client.RpcClient;
 import remote.dto.RpcRequest;
 import remote.dto.RpcResponse;
@@ -11,6 +12,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Created by JackJ on 2021/1/17.
@@ -32,9 +34,9 @@ public class RpcInvocationHandler implements InvocationHandler {
         Provider provider = Provider.of(values);
         Provider.Node node = provider.peekNode();
 
-        RpcRequest request = new RpcRequest(provider.getImplClassName(), method.getName(), args);
+        RpcRequest request = new RpcRequest(UUID.randomUUID().toString(), provider.getImplClassName(), method.getName(), args);
 
-        RpcResponse response = RpcClient.request(request, node.getHost(), node.getPort());
+        RpcResponse response = NettyRpcClient.request(request, node.getHost(), node.getPort());
 
         if (Objects.isNull(response)) {
             throw new RuntimeException("[响应数据出错]:响应数据为null");
