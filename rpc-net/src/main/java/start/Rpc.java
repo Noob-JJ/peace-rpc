@@ -47,6 +47,7 @@ public class Rpc {
     }
 
     public void start() {
+        RegistryFactory.getRegistry().clearAllHook();
         Server nettyServer = new NettyServer(Integer.parseInt(SimpleConfig.INSTANCE.get("provider.port")), new SimpleRequestHandler());
         nettyServer.start();
     }

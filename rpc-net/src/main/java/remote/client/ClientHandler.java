@@ -18,7 +18,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<RpcMessage> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcMessage rpcMessage) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcMessage rpcMessage) {
         CompletableFuture<RpcMessage> result = map.get(((RpcResponse) rpcMessage.getData()).getRequestId());
 
         if (result == null) {
@@ -26,7 +26,5 @@ public class ClientHandler extends SimpleChannelInboundHandler<RpcMessage> {
         }
 
         result.complete(rpcMessage);
-
-        ReferenceCountUtil.release(rpcMessage);
     }
 }

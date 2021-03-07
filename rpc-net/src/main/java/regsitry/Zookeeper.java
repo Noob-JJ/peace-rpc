@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +35,7 @@ enum Zookeeper implements Registry {
     private static final int MAX_RETRY = 3;
     private static final CuratorFramework zkClient;
     private static final Map<String, List<String>> serviceLocalBackup = new ConcurrentHashMap<>();
+    private static final List<String> providerServicePath = new CopyOnWriteArrayList<>();
 
     static {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(BASE_SLEEP_TIME, MAX_RETRY);
@@ -41,10 +43,26 @@ enum Zookeeper implements Registry {
         zkClient.start();
     }
 
+    public void clearAllHook(){
+        Runtime.getRuntime().addShutdownHook(new Thread(() ->
+            providerServicePath.forEach(path -> {
+                try {
+                    System.out.println(path);
+                    zkClient.delete().forPath(path);
+                    System.out.println("删除节点成功");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            })
+        ));
+
+    }
+
     @Override
     public void registry(String serviceName, String value) {
         String path = genRegistryPath(serviceName, value);
         CuratorUtil.createChildNode(zkClient, path);
+        providerServicePath.add(path);
     }
 
 

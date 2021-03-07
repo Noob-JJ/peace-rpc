@@ -31,6 +31,7 @@ public class NettyServer implements Server {
 
     @Override
     public void start() {
+
         DefaultEventLoopGroup businessThreadPool = new DefaultEventLoopGroup(getCpuNum());
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);

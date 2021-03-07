@@ -16,4 +16,6 @@ public interface Registry {
 
     List<String> getNode(String service);
 
+    void clearAllHook();
+
 }
