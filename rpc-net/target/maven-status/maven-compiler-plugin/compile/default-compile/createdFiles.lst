@@ -4,6 +4,7 @@ remote\channelHandler\Encoder.class
 common\RpcConstant.class
 util\ByteUtils.class
 remote\dto\RpcResponse.class
+util\registry\CuratorUtil.class
 util\RuntimeUtil.class
 remote\server\NettyServer.class
 util\serialize\SerializeFactory.class

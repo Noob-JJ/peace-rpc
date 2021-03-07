@@ -88,11 +88,12 @@ public class SimpleCoder {
 
         System.arraycopy(header.getMagicNum(), 0, headerBytes, 0, RpcConstant.PROTOCOL_HEADER_MAGIC_NUM.length);
         position += RpcConstant.PROTOCOL_HEADER_MAGIC_NUM.length;
-        headerBytes[++position] = header.getVersion();
-        System.arraycopy(ByteUtils.intToBytes(header.getDataLength()), 0, headerBytes, ++position, 4);
-        headerBytes[++position] = header.getMessageType();
-        headerBytes[++position] = header.getCompressType();
-        headerBytes[++position] = header.getSerializeType();
+        headerBytes[position++] = header.getVersion();
+        System.arraycopy(ByteUtils.intToBytes(header.getDataLength()), 0, headerBytes, position, 4);
+        position += 4;
+        headerBytes[position++] = header.getMessageType();
+        headerBytes[position++] = header.getCompressType();
+        headerBytes[position] = header.getSerializeType();
 
         return headerBytes;
     }
@@ -113,6 +114,7 @@ public class SimpleCoder {
         serializeType = (byte) inputStream.read();
 
         return new RpcHeader()
+                .setMagicNum(magicNum)
                 .setSerializeType(serializeType)
                 .setVersion(version)
                 .setDataLength(ByteUtils.bytesToInt(dataLength))

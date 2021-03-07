@@ -5,11 +5,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.zookeeper.CreateMode;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CuratorUtil {
 
@@ -18,7 +14,7 @@ public class CuratorUtil {
         try {
 
             zkClient.create().creatingParentsIfNeeded().
-                    withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(path);
+                    withMode(CreateMode.EPHEMERAL).forPath(path);
 
         } catch (Exception e) {
             throw new RuntimeException("[注册服务失败]：zookeeper添加节点出错");

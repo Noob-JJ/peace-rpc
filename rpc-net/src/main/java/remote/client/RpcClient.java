@@ -20,7 +20,6 @@ public class RpcClient {
     private static final int TIMEOUT_TIME = 9 * 1000;
 
     public static RpcResponse request(RpcRequest rpcRequest, String host, int port) {
-        byte[] buffer = new byte[1024 * 1024];
 
         try (Socket socket = new Socket(host, port);
              OutputStream outputStream = socket.getOutputStream();
@@ -34,8 +33,6 @@ public class RpcClient {
             outputStream.write(requestBytes);
 
             RpcMessage responseMessage = SimpleCoder.decode(inputStream);
-
-            // TODO: 2021/3/6 checkmessage
 
             return (RpcResponse) responseMessage.getData();
         } catch (Exception e) {

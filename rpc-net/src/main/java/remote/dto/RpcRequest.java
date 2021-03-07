@@ -13,6 +13,10 @@ public class RpcRequest implements Serializable {
 
     private Object[] params;
 
+    public RpcRequest() {
+
+    }
+
     public RpcRequest(String className, String methodName, Object[] params) {
         this.className = className;
         this.methodName = methodName;

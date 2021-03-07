@@ -18,6 +18,7 @@ D:\Code\java\peace-rpc\rpc-net\src\main\java\exception\RpcException.java
 D:\Code\java\peace-rpc\rpc-net\src\main\java\remote\dto\RpcMessage.java
 D:\Code\java\peace-rpc\rpc-net\src\main\java\config\SimpleConfig.java
 D:\Code\java\peace-rpc\rpc-net\src\main\java\remote\server\RpcServer.java
+D:\Code\java\peace-rpc\rpc-net\src\main\java\util\registry\CuratorUtil.java
 D:\Code\java\peace-rpc\rpc-net\src\main\java\remote\server\NettyServer.java
 D:\Code\java\peace-rpc\rpc-net\src\main\java\proxy\RpcInvocationHandler.java
 D:\Code\java\peace-rpc\rpc-net\src\main\java\util\ByteUtils.java

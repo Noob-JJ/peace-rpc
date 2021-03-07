@@ -39,13 +39,13 @@ public class Provider {
     public Node peekNode() {
          if (hostAndPort.size() == 1) {
             String[] infos = hostAndPort.get(0).split(":");
-            return new Node(infos[1], infos[2]);
+            return new Node(infos[0], infos[1]);
         } else if (SimpleConfig.INSTANCE.get("rpc.load.balance") == null) {
             String[] infos = hostAndPort.get(0).split(":");
-            return new Node(infos[1], infos[2]);
+            return new Node(infos[0], infos[1]);
         } else {
             String[] infos = hostAndPort.get(0).split(":");
-            return new Node(infos[1], infos[2]);
+            return new Node(infos[0], infos[1]);
         }
 
     }

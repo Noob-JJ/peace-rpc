@@ -28,8 +28,6 @@ import java.util.Properties;
  */
 public class Rpc {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Rpc.class);
-
     private String version;
 
     private String group;
@@ -48,10 +46,8 @@ public class Rpc {
     }
 
     public void start() {
-        LOGGER.info("start server");
-        NettyServer rpcServer = new NettyServer(Integer.parseInt(SimpleConfig.INSTANCE.get("provider.port")), new SimpleRequestHandler());
-        Thread thread = new Thread(rpcServer::start);
-        thread.start();
+        RpcServer rpcServer = new RpcServer(Integer.parseInt(SimpleConfig.INSTANCE.get("provider.port")), new SimpleRequestHandler());
+        rpcServer.start();
     }
 
     public Rpc registry(Class<?> registryService) {

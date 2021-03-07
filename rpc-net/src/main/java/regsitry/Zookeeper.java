@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 /**
  * Created by JackJ on 2021/1/16.
  */
+
+// TODO: 2021/3/7 添加程序关闭hook取消registry的注册
 enum Zookeeper implements Registry {
     INSTANCE;
 
@@ -56,7 +58,11 @@ enum Zookeeper implements Registry {
                 List<String> serviceAddresses = curatorFramework.getChildren().forPath(path);
                 serviceLocalBackup.put(serviceName, serviceAddresses);
             });
-            return serviceLocalBackup.put(serviceName, CuratorUtil.getNodeValue(zkClient, path));
+
+            List<String> result = CuratorUtil.getNodeValue(zkClient, path);
+            serviceLocalBackup.put(serviceName, result);
+
+            return result;
         }
 
         return local;
@@ -68,7 +74,7 @@ enum Zookeeper implements Registry {
 
     private String genRegistryPath(String serviceName, String value) {
 
-        return genFindPath(serviceName) + value;
+        return genFindPath(serviceName) + "/" + value;
     }
 
 

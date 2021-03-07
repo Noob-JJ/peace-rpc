@@ -6,7 +6,7 @@ public class ByteUtils {
         int result = 0;
 
         for (byte aByte : bytes) {
-            result = result << 8 + aByte;
+            result = (result << 8) + aByte;
         }
 
         return result;
@@ -16,7 +16,7 @@ public class ByteUtils {
         byte[] result = new byte[4];
 
         for (int i = 0; i < 4; i++) {
-            result[i] = (byte) (number >>> (3 - i));
+            result[i] = (byte) (number >>> (3 - i) * 8);
         }
 
         return result;
