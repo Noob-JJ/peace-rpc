@@ -35,10 +35,6 @@ public class Rpc {
     private String group;
 
 
-    private Rpc(){
-
-    }
-
     public Rpc version(String version) {
         SimpleConfig.INSTANCE.put("version", version);
         this.version = version;
@@ -58,7 +54,7 @@ public class Rpc {
         thread.start();
     }
 
-    public Rpc registry(Object registryService) {
+    public Rpc registry(Class<?> registryService) {
 
         if (Objects.isNull(registryService)) {
             throw new RuntimeException("注册的服务不能为null");
@@ -67,22 +63,22 @@ public class Rpc {
         Registry registry = RegistryFactory.getRegistry();
 
         String serviceName = genServiceName(registryService);
-        InetSocketAddress address = null;
+        String value = null;
 
         try {
-            address = new InetSocketAddress(InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(SimpleConfig.INSTANCE.get("provider.port")));
+            value = registryService.getCanonicalName() + "," + InetAddress.getLocalHost().getHostAddress() + ":" + Integer.parseInt(SimpleConfig.INSTANCE.get("provider.port"));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
-        registry.registry(serviceName, address);
+        registry.registry(serviceName, value);
 
 
         return this;
     }
 
-    private String genServiceName(Object service){
-        String className = service.getClass().getInterfaces()[0].getCanonicalName();
+    private String genServiceName(Class<?> service){
+        String className = service.getInterfaces()[0].getCanonicalName();
 
         return className + this.group + this.version;
     }

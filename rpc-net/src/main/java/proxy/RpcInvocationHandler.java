@@ -10,6 +10,7 @@ import regsitry.RegistryFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by JackJ on 2021/1/17.
@@ -27,13 +28,17 @@ public class RpcInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String serviceName = genServiceName(target.getCanonicalName());
 
-        List<String> address = RegistryFactory.getRegistry().getNode(serviceName);
-        Provider provider = new Provider(address);
+        List<String> values = RegistryFactory.getRegistry().getNode(serviceName);
+        Provider provider = Provider.of(values);
         Provider.Node node = provider.peekNode();
 
-        RpcRequest request = new RpcRequest(serviceName, method.getName(), args);
+        RpcRequest request = new RpcRequest(provider.getImplClassName(), method.getName(), args);
 
         RpcResponse response = RpcClient.request(request, node.getHost(), node.getPort());
+
+        if (Objects.isNull(response)) {
+            throw new RuntimeException("[响应数据出错]:响应数据为null");
+        }
 
         return response.get();
     }

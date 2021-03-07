@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface Registry {
 
-    void registry(String serviceName, InetSocketAddress inetSocketAddress);
+    void registry(String serviceName, String value);
 
     List<String> getNode(String service);
 

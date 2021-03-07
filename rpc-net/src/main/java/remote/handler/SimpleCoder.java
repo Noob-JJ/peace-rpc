@@ -18,6 +18,8 @@ public class SimpleCoder {
     public static RpcMessage decode(InputStream inputStream) throws IOException {
 
         RpcHeader rpcHeader = analysisHeader(inputStream);
+        verifyHeader(rpcHeader);
+
         byte[] dataBytes = new byte[rpcHeader.getDataLength()];
         read(inputStream, dataBytes);
 
@@ -59,6 +61,19 @@ public class SimpleCoder {
 
 
         return new RpcMessage(rpcHeader, data);
+    }
+
+    private static void verifyHeader(RpcHeader header) {
+        byte[] magicNumber = header.getMagicNum();
+        for (int i = 0; i < magicNumber.length; i++) {
+            if (header.getMagicNum()[i] != RpcConstant.PROTOCOL_HEADER_MAGIC_NUM[i]) {
+                throw new RuntimeException("magic error");
+            }
+        }
+
+        if (header.getVersion() != RpcConstant.PROTOCOL_HEADER_VERSION) {
+            throw new RuntimeException("version error");
+        }
     }
 
     private static byte[] compressAndSerialize(RpcMessage rpcMessage) {

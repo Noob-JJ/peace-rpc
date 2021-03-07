@@ -12,7 +12,6 @@ public class RegistryFactory {
 
 
     public static Registry getRegistry() {
-        String registry = Rpc.getConfig().getRegistry();
-        return Zookeeper.INSTANCE; // TODO: 2021/2/21 暂时只有zookeeper
+        return Zookeeper.INSTANCE;
     }
 }
