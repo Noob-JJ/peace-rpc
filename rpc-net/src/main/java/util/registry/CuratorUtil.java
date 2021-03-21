@@ -1,5 +1,6 @@
 package util.registry;
 
+import exception.RpcException;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
@@ -17,7 +18,7 @@ public class CuratorUtil {
                     withMode(CreateMode.EPHEMERAL).forPath(path);
 
         } catch (Exception e) {
-            throw new RuntimeException("[注册服务失败]：zookeeper添加节点出错");
+            throw new RpcException("[注册服务失败]：zookeeper添加节点出错");
         }
     }
 
@@ -28,7 +29,7 @@ public class CuratorUtil {
             childrenNodes = zkClient.getChildren().forPath(path);
 
         } catch (Exception e) {
-            throw new RuntimeException("[获取服务地址失败]：zookeeper获取节点数据出错");
+            throw new RpcException("[获取服务地址失败]：zookeeper获取节点数据出错");
         }
 
         return childrenNodes;
@@ -40,7 +41,7 @@ public class CuratorUtil {
             pathChildrenCache.getListenable().addListener(pathChildrenCacheListener);
             pathChildrenCache.start();
         } catch (Exception e) {
-            throw new RuntimeException("[监听服务错误]:zookeeper添加监听器出错");
+            throw new RpcException("[监听服务错误]:zookeeper添加监听器出错");
         }
     }
 }

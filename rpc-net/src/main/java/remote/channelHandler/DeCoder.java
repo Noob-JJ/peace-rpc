@@ -1,6 +1,7 @@
 package remote.channelHandler;
 
 import common.RpcConstant;
+import exception.RpcException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -44,12 +45,12 @@ public class DeCoder extends LengthFieldBasedFrameDecoder {
         byte[] magicNumber = header.getMagicNum();
         for (int i = 0; i < magicNumber.length; i++) {
             if (header.getMagicNum()[i] != RpcConstant.PROTOCOL_HEADER_MAGIC_NUM[i]) {
-                throw new RuntimeException("magic error");
+                throw new RpcException("magic error");
             }
         }
 
         if (header.getVersion() != RpcConstant.PROTOCOL_HEADER_VERSION) {
-            throw new RuntimeException("version error");
+            throw new RpcException("version error");
         }
     }
 

@@ -3,6 +3,7 @@ package entity;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import config.SimpleConfig;
+import exception.RpcException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class Provider {
 
     public static Provider of(List<String> value){
         if (value == null || value.size() == 0) {
-            throw new RuntimeException("[远程调用失败]:没有发现被注册的远程服务");
+            throw new RpcException("[远程调用失败]:没有发现被注册的远程服务");
         }
 
         String implClassName = value.get(0).split(",")[0];

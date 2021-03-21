@@ -1,6 +1,7 @@
 package remote.handler;
 
 import common.RpcConstant;
+import exception.RpcException;
 import remote.dto.RpcHeader;
 import remote.dto.RpcMessage;
 import remote.dto.RpcRequest;
@@ -67,12 +68,12 @@ public class SimpleCoder {
         byte[] magicNumber = header.getMagicNum();
         for (int i = 0; i < magicNumber.length; i++) {
             if (header.getMagicNum()[i] != RpcConstant.PROTOCOL_HEADER_MAGIC_NUM[i]) {
-                throw new RuntimeException("magic error");
+                throw new RpcException("magic error");
             }
         }
 
         if (header.getVersion() != RpcConstant.PROTOCOL_HEADER_VERSION) {
-            throw new RuntimeException("version error");
+            throw new RpcException("version error");
         }
     }
 

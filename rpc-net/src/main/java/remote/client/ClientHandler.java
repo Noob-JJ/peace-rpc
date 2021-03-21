@@ -1,5 +1,6 @@
 package remote.client;
 
+import exception.RpcException;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
@@ -22,7 +23,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<RpcMessage> {
         CompletableFuture<RpcMessage> result = map.get(((RpcResponse) rpcMessage.getData()).getRequestId());
 
         if (result == null) {
-            throw new RuntimeException("无效响应");
+            throw new RpcException("无效响应");
         }
 
         result.complete(rpcMessage);

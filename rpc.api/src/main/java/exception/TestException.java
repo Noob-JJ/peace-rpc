@@ -1,4 +1,4 @@
 package exception;
 
-public class TestException extends RuntimeException{
+public class TestException extends RpcException{
 }

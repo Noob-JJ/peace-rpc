@@ -2,6 +2,7 @@ package proxy;
 
 import config.SimpleConfig;
 import entity.Provider;
+import exception.RpcException;
 import remote.client.NettyRpcClient;
 import remote.client.RpcClient;
 import remote.dto.RpcRequest;
@@ -39,7 +40,7 @@ public class RpcInvocationHandler implements InvocationHandler {
         RpcResponse response = NettyRpcClient.request(request, node.getHost(), node.getPort());
 
         if (Objects.isNull(response)) {
-            throw new RuntimeException("[响应数据出错]:响应数据为null");
+            throw new RpcException("[响应数据出错]:响应数据为null");
         }
 
         return response.get();

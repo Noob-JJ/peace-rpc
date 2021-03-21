@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import config.Config;
 import config.ConfigTem;
 import config.SimpleConfig;
+import exception.RpcException;
 import remote.server.NettyServer;
 import remote.server.RpcServer;
 import remote.handler.SimpleRequestHandler;
@@ -55,7 +56,7 @@ public class Rpc {
     public Rpc registry(Class<?> registryService) {
 
         if (Objects.isNull(registryService)) {
-            throw new RuntimeException("注册的服务不能为null");
+            throw new RpcException("注册的服务不能为null");
         }
 
         Registry registry = RegistryFactory.getRegistry();

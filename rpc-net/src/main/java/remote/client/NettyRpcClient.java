@@ -1,5 +1,6 @@
 package remote.client;
 
+import exception.RpcException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -73,14 +74,14 @@ public class NettyRpcClient {
             if (listener.isSuccess()) {
                 channelCompletableFuture.complete(listener.channel());
             } else {
-                throw new RuntimeException("连接到服务器错误");
+                throw new RpcException("连接到服务器错误");
             }
         });
 
         try {
             return channelCompletableFuture.get();
         } catch (Exception e) {
-            throw new RuntimeException("获取future结果错误");
+            throw new RpcException("获取future结果错误");
         }
     }
 
