@@ -25,4 +25,8 @@ public class ChannelManager {
     public static void addChannel(String address, Channel channel) {
         channelMap.put(address, channel);
     }
+
+    public static void removeChannel(String address) {
+        channelMap.remove(address);
+    }
 }

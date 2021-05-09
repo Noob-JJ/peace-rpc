@@ -9,6 +9,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import remote.channelHandler.DeCoder;
 import remote.channelHandler.Encoder;
 import remote.dto.RpcMessage;
@@ -19,7 +20,7 @@ import remote.handler.SimpleCoder;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class NettyRpcClient {
 
@@ -38,6 +39,7 @@ public class NettyRpcClient {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         socketChannel.pipeline().addLast(new DeCoder());
                         socketChannel.pipeline().addLast(new Encoder());
+                        socketChannel.pipeline().addLast(new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
                         socketChannel.pipeline().addLast(new ClientHandler(completableFutureMap));
                     }
                 });

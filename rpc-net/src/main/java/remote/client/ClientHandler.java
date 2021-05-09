@@ -3,6 +3,8 @@ package remote.client;
 import exception.RpcException;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import remote.dto.RpcMessage;
 import remote.dto.RpcResponse;
@@ -27,5 +29,20 @@ public class ClientHandler extends SimpleChannelInboundHandler<RpcMessage> {
         }
 
         result.complete(rpcMessage);
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent event = (IdleStateEvent) evt;
+            if (event.state().equals(IdleState.ALL_IDLE)) {
+                // TODO-peace: 2021/5/9 确定channel中的地址形式是否满足我的manager中key形式
+                String address = ctx.channel().remoteAddress().toString();
+                ChannelManager.removeChannel(address);
+
+            }
+        }
+
+        ctx.fireUserEventTriggered(evt);
     }
 }
