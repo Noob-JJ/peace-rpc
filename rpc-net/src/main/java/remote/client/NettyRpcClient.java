@@ -91,6 +91,7 @@ public class NettyRpcClient {
 
         if (channel == null) {
             channel = connect(port, ip);
+            ChannelManager.addChannel(ip + port, channel);
         }
 
         return channel;
