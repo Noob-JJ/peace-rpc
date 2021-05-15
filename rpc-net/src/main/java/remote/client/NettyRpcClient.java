@@ -46,6 +46,26 @@ public class NettyRpcClient {
                 });
     }
 
+    public static void RequestAsync(RpcRequest request, String ip, int port, Consumer<RpcMessage> callback) {
+        Channel channel = getChannel(port, ip);
+
+        CompletableFuture<RpcMessage> completableFuture = new CompletableFuture<RpcMessage>().whenComplete((rpcMessage, throwable) -> {
+            callback.accept(rpcMessage);
+        });
+
+        completableFutureMap.put(request.getRequestId(), completableFuture);
+        RpcMessage requestMessage = SimpleCoder.genMessage(request);
+
+        channel.writeAndFlush(requestMessage).addListener((ChannelFutureListener) listener -> {
+            if (listener.isSuccess()) {
+                System.out.println("message send success");
+            } else {
+                Throwable throwable = listener.cause();
+                completableFuture.completeExceptionally(throwable);
+            }
+        });
+    }
+
 
     public static RpcResponse request(RpcRequest request, String ip, int port) {
         Channel channel = getChannel(port, ip);
