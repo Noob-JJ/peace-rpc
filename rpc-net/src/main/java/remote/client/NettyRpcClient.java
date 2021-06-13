@@ -18,6 +18,7 @@ import remote.dto.RpcResponse;
 import remote.handler.SimpleCoder;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -25,8 +26,8 @@ import java.util.function.Consumer;
 
 public class NettyRpcClient {
 
-    private static Bootstrap bootstrap;
-    private static Map<String, CompletableFuture<RpcMessage>> completableFutureMap = new ConcurrentHashMap<>();
+    private static final Bootstrap bootstrap;
+    private static final Map<String, CompletableFuture<RpcMessage>> completableFutureMap = new ConcurrentHashMap<>();
 
     static {
 
@@ -50,7 +51,9 @@ public class NettyRpcClient {
         Channel channel = getChannel(port, ip);
 
         CompletableFuture<RpcMessage> completableFuture = new CompletableFuture<RpcMessage>().whenComplete((rpcMessage, throwable) -> {
-            callback.accept(rpcMessage);
+            if (callback != null) {
+                callback.accept(rpcMessage);
+            }
         });
 
         completableFutureMap.put(request.getRequestId(), completableFuture);
@@ -108,17 +111,25 @@ public class NettyRpcClient {
         }
     }
 
-    // TODO: 2021/3/7 这里有一个问题如果有两个线程同时想向一个主机发送消息怎么处理  等下想一下 这个要自己处理了别再看了
     public static Channel getChannel(int port, String ip) {
         Channel channel = ChannelManager.get(ip + port);
 
-        if (channel == null) {
+        if (Objects.nonNull(channel) && channel.isActive()) {
+            return channel;
+        }
+
+        return newConnectChannel(port, ip);
+    }
+
+    private static synchronized Channel newConnectChannel(int port, String ip) {
+        Channel channel = ChannelManager.get(ip + port);
+
+        if (Objects.isNull(channel)) {
             channel = connect(port, ip);
             ChannelManager.addChannel(ip + port, channel);
         }
 
         return channel;
-
     }
 
 }
